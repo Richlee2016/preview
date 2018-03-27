@@ -10,13 +10,15 @@ class HomeController extends Controller {
   async list(ctx){
     const {id} = ctx.params;
     const res =await ctx.service.home.fetchList(id);
-    await ctx.render('list.html',{res:JSON.stringify(res) || 1});
+    await ctx.render('list.html',{res:res.subjects || 1});
    
   }
 
   async detail(ctx){
     const {id} = ctx.params;
-    await ctx.render('detail.html',{id})
+    const res = await ctx.service.home.fetchDetail(id);
+    console.log(res);
+    await ctx.render('detail.html',{res:res || 1})
   }
 }
 

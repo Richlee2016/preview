@@ -8,6 +8,10 @@
   <style>
   </style>
   <body>
-      {{res}}
+      {% for item in res %}
+        <a href="/detail/{{item.id}}">
+          <img src={{item.images.small}} />
+        </a>
+      {% endfor %}
   </body>
 </html>
