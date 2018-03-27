@@ -1,11 +1,12 @@
-# dependencies
-node_modules
-
-# logs
+logs/
 npm-debug.log
-
-# Nuxt build
-.nuxt
-
-# Nuxt generate
-dist
+yarn-error.log
+node_modules/
+package-lock.json
+yarn.lock
+coverage/
+.idea/
+run/
+.DS_Store
+*.sw*
+*.un~
