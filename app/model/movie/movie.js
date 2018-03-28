@@ -34,9 +34,7 @@ module.exports = app => {
   MovieSchema.statics = {
     async SaveMovie(data) {
       let movie = await this.findOne({ id:data.id }).exec();
-      const _movie = Object.assign({},data,{
-        _id:data.id
-      });
+      const _movie = Object.assign({},data);
       if (movie) {
         movie = Object.assign(movie,_movie);
       } else {

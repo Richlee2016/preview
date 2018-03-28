@@ -31,7 +31,7 @@ class QiniuService extends Service {
         })
     }
     // movie推荐 视频地址
-    async hotQiniuUpdate(movie) {
+    async movieQiniuUpdate(movie) {
         if (movie.video && !movie.videoKey) {
             try {
                 let videoData = await this._uploadToQiniu(movie.video, `douban_video_${movie.id}.mp4`);
@@ -42,7 +42,8 @@ class QiniuService extends Service {
                 if (coverData.key) {
                     movie.coverKey = this.config.qiniu.cname + coverData.key
                 }
-                return movie;
+                const res = await this.Movie.SaveMovie(movie);
+                return res;
             } catch (error) {
                 console.log(error);
             }

@@ -43,17 +43,20 @@ class HomeService extends Service {
   }
 
   async fetchDetail(id){
+
+    // this.ctx.app.messenger.sendToApp("video_qiniu",{movie:{href:"https://movie.douban.com/subject/3445906"}});
     const movie = await this.Movie.findOne({id:id}).exec();
     if(!movie){
       const req = await this._request(`${this.DouBan.subject}/${id}`);
       const saveData = {
+        _id:req.id,
         id:req.id,
         cover:req.images.medium || req.images.small || req.images.large,
         list:req
       }
-      const theMovie = await this.Movie.SaveMovie(saveData);
-      this.ctx.app.messenger.sendToApp("update-qiniu",{movie:theMovie});
-      return theMovie;
+      const isMovie = await this.Movie.SaveMovie(saveData);
+      this.ctx.app.messenger.sendToApp("video_qiniu",{href:isMovie.list.alt,isMovie});
+      return isMovie;
     }else{
       return movie;
     };

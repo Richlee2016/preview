@@ -1,73 +1,41 @@
 const Service = require("egg").Service;
+const puppeteer = require("puppeteer");
 
 const sleep = time => new Promise(resolve => {
-    setTimeout(resolve, time)
+  setTimeout(resolve, time)
 })
 
 class CrawlerService extends Service {
-    constructor(ctx) {
-        super(ctx);
-    }
+  constructor(ctx) {
+    super(ctx);
+  }
 
-    async crawlerVideo() {
-        const browser = await puppeteer.launch({
-            args: ['--no-sandbox'],
-            dumpio: false
-          })
-          const page = await browser.newPage()
-        
-          for (let i = 0; i < movies.length; i++) {
-            let doubanId = movies[i].doubanId
-        
-            await page.goto(base + doubanId, {
-              waitUntil: 'networkidle2'
-            })
-            await sleep(1000)
-        
-            const result = await page.evaluate(() => {
-              var $ = window.$
-              var it = $('.related-pic-video')
-        
-              if (it && it.length > 0) {
-                var link = it.attr('href')
-                var cover = it.find('img').attr('src')
-        
-                return {
-                  link,
-                  cover
-                }
-              }
-        
-              return {}
-            })
-        
-            let video
-        
-            if (result.link) {
-              await page.goto(result.link, {
-                waitUntil: 'networkidle2'
-              })
-              await sleep(1000)
-        
-              video = await page.evaluate(() => {
-                var $ = window.$
-                var it = $('source')
-        
-                if (it && it.length > 0) {
-                  return it.attr('src')
-                }
-        
-                return ''
-              })
-            }
-            const data = {
-              video,
-              doubanId,
-              cover: result.cover
-            }
-          }
-          browser.close()
-    }
+  async crawlerVideo(href) {
+    console.log("crawler",href);
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto(href);
+
+    await sleep(5000);
+
+    const vidoehref = await page.evaluate(() => {
+      var $ = window.$
+      var it = $('.related-pic-video').attr("href");
+      return it;
+    });
+
+    await page.goto(vidoehref);
+
+    await sleep(5000);
+
+    const videoList = await page.evaluate (() => {
+      var $ = window.$;
+      var it = $("video source").attr("src");
+      return it;
+    })
+    await browser.close();
+    return videoList;
+  }
 }
 
 module.exports = CrawlerService;
