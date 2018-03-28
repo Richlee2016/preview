@@ -17,7 +17,6 @@ class HomeController extends Controller {
   async detail(ctx){
     const {id} = ctx.params;
     const res = await ctx.service.home.fetchDetail(id);
-    console.log(res);
     await ctx.render('detail.html',{res:res || 1})
   }
 }

@@ -2,17 +2,14 @@ module.exports = app => {
   const mongoose = app.mongoose;
   const { Schema } = mongoose;
   const Mixed = Schema.Types.Mixed;
-  const HotSchema = new mongoose.Schema({
-    id: Number,
-    name: String,
-    movieHome: { type:Number, ref: "t_movie_home" },
-    // onlineSrc:String,
-    // bgm: String,
-    video: String,
+  const MovieSchema = new mongoose.Schema({
+    _id: Number,
+    id:Number,
+    video:String,
     videoKey:String,
     cover:String,
     coverKey:String,
-    hotType: Number,//1 热门推荐  2 即将上映 3.经典影片,
+    list:Mixed,
     meta: {
       createAt: {
         type: Date,
@@ -25,7 +22,7 @@ module.exports = app => {
     }
   });
 
-  HotSchema.pre("save", function(next) {
+  MovieSchema.pre("save", function(next) {
     if (this.isNew) {
       this.meta.createAt = this.meta.updateAt = Date.now();
     } else {
@@ -34,29 +31,28 @@ module.exports = app => {
     next();
   });
 
-  HotSchema.statics = {
-    async SaveHot(data) {
-      let hot = await this.findOne({ id:data.id }).exec();
-      let count = await this.count();
-      const _hot = Object.assign({},data,{
-        id:count+1
+  MovieSchema.statics = {
+    async SaveMovie(data) {
+      let movie = await this.findOne({ id:data.id }).exec();
+      const _movie = Object.assign({},data,{
+        _id:data.id
       });
-      if (hot) {
-        hot = Object.assign(hot,_hot);
+      if (movie) {
+        movie = Object.assign(movie,_movie);
       } else {
-        hot = new Hot(_hot);
+        movie = new Movie(_movie);
       }
       try {
-        const res = await hot.save();
-        console.log(`${data.name}更新成功`);
+        const res = await movie.save();
+        console.log(`${data.list.title}更新成功`);
         return res;
       } catch (error) {
-        console.log(`${data.name}更新失败`);
+        console.log(`${data.list.title}更新失败`);
         console.log(error);
       }
     }
   };
 
-  const Hot = mongoose.model("t_movie_hot", HotSchema);
-  return Hot;
+  const Movie = mongoose.model("t_movie_list", MovieSchema);
+  return Movie;
 };

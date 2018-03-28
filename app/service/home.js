@@ -43,14 +43,27 @@ class HomeService extends Service {
   }
 
   async fetchDetail(id){
-    console.log(`${this.DouBan.subject}/${id}`);
-    return this._request(`${this.DouBan.subject}/${id}`);
+    const movie = await this.Movie.findOne({id:id}).exec();
+    if(!movie){
+      const req = await this._request(`${this.DouBan.subject}/${id}`);
+      const saveData = {
+        id:req.id,
+        cover:req.images.medium || req.images.small || req.images.large,
+        list:req
+      }
+      const theMovie = await this.Movie.SaveMovie(saveData);
+      this.ctx.app.messenger.sendToApp("update-qiniu",{movie:theMovie});
+      return theMovie;
+    }else{
+      return movie;
+    };
   }
 
   async fetchSearch(querys){
     const query = qs(querys);
     return this._request(`${this.DouBan.search}?${query}`);
   }
+
 
   async _request(src) {
     try {
