@@ -49,6 +49,18 @@ class QiniuService extends Service {
             }
         }
     }
+
+    async movieQiniuGet(key) {
+        console.log(key);
+        this.client.stat(this.bucket, key, function (err, ret) {
+            if (!err) {
+                console.log("ret===>",ret);
+                console.log(ret.hash, ret.fsize, ret.putTime, ret.mimeType);
+            } else {
+                console.log(err);
+            }
+        });
+    }
 }
 
 module.exports = QiniuService;

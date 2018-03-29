@@ -6,10 +6,11 @@ module.exports = app => {
         const ctx = app.createAnonymousContext();
         ctx.runInBackground(async () => {
             const video = await ctx.service.crawler.crawlerVideo(href);
-            movie.video = video;
-            console.log(movie);
-            const qiniu = await ctx.service.qiniu.movieQiniuUpdate(movie);
-            console.log(`${qiniu.list.title}在七牛上传成功`);
+            if(video){
+                movie.video = video;
+                const qiniu = await ctx.service.qiniu.movieQiniuUpdate(movie);
+                console.log(`${qiniu.list.title}在七牛上传成功`);
+            };
         });
     });
 }

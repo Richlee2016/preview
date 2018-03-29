@@ -8,6 +8,30 @@
   <style>
   </style>
   <body>
-   
+    <!-- <ul>
+      <li>
+        <a href="/list/hot">正在热映</a>
+      </li>
+      <li>
+        <a href="/list/soon">即将上映</a>
+      </li>
+      <li>
+        <a href="/list/top250">Top250</a>
+      </li> -->
+      <!-- <li>
+        <a href="/list/weekly">口碑榜</a>
+      </li> -->
+      <!-- <li>
+        <a href="/list/us">北美票房榜</a>
+      </li> -->
+      <!-- <li>
+        <a href="/list/newm">新片榜</a>
+      </li> -->
+    <!-- </ul> -->
+    {% for item in movie %}
+        <a href="/detail/{{item.id}}">
+          <img src={{item.images.small}} />
+        </a>
+      {% endfor %}
   </body>
 </html>
